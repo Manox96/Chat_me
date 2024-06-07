@@ -9,16 +9,35 @@ function Message() {
 
   const msj = useRef();
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     const message = msj.current.value;
     setArr(prevArr => [...prevArr, { message }]);
     setUserMessage(message);
     msj.current.value = '';
+
+    try {
+      const response = await fetch('YOUR_API_ENDPOINT', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setArrai(prevArrai => [...prevArrai, { message: data.response }]);
+      } else {
+        console.error('Error:', response.status);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
     <div className='container relative m-1'>
-      <div className='w-4/6 text-center h-5/6 min-h-full border-cyan-400 absolute left-52 bg-cyan-100'>
+      <div className='w-4/6 text-center h-5/6 min-h-full  absolute left-52 '>
         <h1 className='font-mono mt-10 text-3xl'>What help u Need</h1>
         <div className='flex flex-col gap-2'>
         {arrai && arrai.map((item, index) => (
